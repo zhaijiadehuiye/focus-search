@@ -62,3 +62,6 @@ body.has-wallpaper footer:before{display:none}
 body.has-wallpaper .header{padding-left:36px;padding-right:36px}
 body.has-wallpaper footer{padding:18px 36px}
 @media(max-width:600px){body.has-wallpaper .header{padding-left:20px;padding-right:20px}body.has-wallpaper footer{padding:15px 20px}}
+
+/* Mobile first spacing and app deeplink result */
+@media(max-width:600px){body{overflow-x:hidden}.search-home{width:100%}.searchbar{max-width:100%}.result-links{gap:7px}.result-link{font-size:11px;padding:8px 9px}.app-result-link{background:rgba(52,168,83,.22);border-color:rgba(255,255,255,.35)}}

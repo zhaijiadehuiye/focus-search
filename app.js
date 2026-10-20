@@ -57,7 +57,17 @@
   function node(tag,cls,text){const el=document.createElement(tag);if(cls)el.className=cls;if(text)el.textContent=text;return el;}
   function icon(name){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');const use=document.createElementNS('http://www.w3.org/2000/svg','use');use.setAttribute('href','#i-'+name);svg.append(use);svg.setAttribute('aria-hidden','true');return svg;}
   function symbol(site){const el=node('span','site-symbol',site.symbol);el.style.setProperty('--site-color',site.color);el.setAttribute('aria-hidden','true');return el;}
+  const APP_LINKS={
+    xhs:q=>'xhsdiscover://search/result?keyword='+encodeURIComponent(q),
+    zhihu:q=>'zhihu://search?q='+encodeURIComponent(q),
+    bilibili:q=>'bilibili://search?keyword='+encodeURIComponent(q),
+    douyin:q=>'snssdk1128://search?keyword='+encodeURIComponent(q),
+    youtube:q=>'vnd.youtube://results?search_query='+encodeURIComponent(q),
+    reddit:q=>'reddit://search/?q='+encodeURIComponent(q)
+  };
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   function makeUrl(site,query){return site.template.replaceAll('{query}',encodeURIComponent(query));}
+  function makeAppUrl(site,query){return APP_LINKS[site.id]?.(query)||null;}
   function applyTheme(){document.body.dataset.theme=state.theme==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):state.theme;document.querySelector('meta[name="theme-color"]').content=document.body.dataset.theme==='dark'?'#202124':'#ffffff';}
   applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(state.theme==='system')applyTheme();});
   function renderPlatforms(){
@@ -73,7 +83,7 @@
   }
   function query(){const q=input.value.trim();if(!q){input.focus();input.reportValidity();return null;}return q;}
   function remember(q){if(!state.remember)return;state.history=[q,...state.history.filter(item=>item!==q)].slice(0,8);save();renderHistory();}
-  function showResults(q,chosen,multiple=false){$('#results-heading').textContent='“'+q+'”';$('#results-note').textContent=multiple?'已请求打开所选平台。如新标签未打开，请点击以下链接。':'已请求打开'+chosen[0].name+'。也可以点击下方链接再次打开。';$('#result-links').replaceChildren();for(const site of chosen){const link=node('a','result-link',site.name);link.href=makeUrl(site,q);link.target='_blank';link.rel='noopener noreferrer';link.append(icon('arrow'));$('#result-links').append(link);}$('#results').hidden=false;}
+  function showResults(q,chosen,multiple=false){$('#results-heading').textContent='“'+q+'”';$('#results-note').textContent=multiple?'已请求打开所选平台。如新标签未打开，请点击以下链接。':'已请求打开'+chosen[0].name+'。也可以点击下方链接再次打开。';$('#result-links').replaceChildren();for(const site of chosen){const link=node('a','result-link',site.name+' 网页');link.href=makeUrl(site,q);link.target='_blank';link.rel='noopener noreferrer';link.append(icon('arrow'));$('#result-links').append(link);const appUrl=makeAppUrl(site,q);if(appUrl&&isMobile){const appLink=node('a','result-link app-result-link',site.name+' App');appLink.href=appUrl;appLink.rel='noopener';appLink.append(icon('arrow'));$('#result-links').append(appLink);}}$('#results').hidden=false;}
   function search(chosen,multiple=false){chosen=chosen.filter(Boolean);if(!chosen.length){openDialog('sites-dialog');return;}const q=query();if(!q)return;remember(q);showResults(q,chosen,multiple);if(multiple||state.newTab)for(const site of chosen)window.open(makeUrl(site,q),'_blank','noopener,noreferrer');else window.location.assign(makeUrl(chosen[0],q));}
   $('#search-form').addEventListener('submit',event=>{event.preventDefault();search([siteById(state.selected)]);});input.addEventListener('input',()=>{$('#clear-input').hidden=!input.value;});$('#clear-input').addEventListener('click',()=>{input.value='';$('#clear-input').hidden=true;input.focus();});$('#close-results').addEventListener('click',()=>{$('#results').hidden=true;});
   function openDialog(id){if(id==='sites-dialog')renderSiteList();if(id==='background-dialog'){renderWallpaperGallery();syncBackgroundControls();}const dialog=$('#'+id);if(!dialog.open)dialog.showModal();}
