@@ -83,4 +83,7 @@ body.has-wallpaper footer{padding:18px 36px}
   body:not(.has-wallpaper) .mobile-app-open{color:var(--text);border-color:var(--border);background:var(--soft)}
   .mobile-app-open .site-symbol{font-size:16px;color:#fff}.mobile-app-web{font-size:11px;color:rgba(255,255,255,.78)}body:not(.has-wallpaper) .mobile-app-web{color:var(--muted)}
   .mobile-fallback-note{font-size:11px;color:rgba(255,255,255,.7);margin:26px 0 0}body:not(.has-wallpaper) .mobile-fallback-note{color:var(--muted)}
+  .mobile-gateway-tools{display:flex;gap:18px;margin-top:22px}
+  .mobile-gateway-tools .text-btn{color:rgba(255,255,255,.84);font-size:12px;text-shadow:0 1px 5px #0006}
+  body:not(.has-wallpaper) .mobile-gateway-tools .text-btn{color:var(--muted);text-shadow:none}
 }
