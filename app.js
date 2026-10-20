@@ -30,6 +30,8 @@
       const parts=u.pathname.split('/').filter(Boolean);
       const index=parts.findIndex(part=>/^(search|search_result|results|s)$/i.test(part));
       if (index>=0 && parts[index+1]) { parts[index+1]='{query}'; u.pathname='/'+parts.join('/'); return u.toString(); }
+      const last=parts.length-1;
+      if (last>=0 && decodeURIComponent(parts[last]) && index>=0) { parts[last]='{query}'; u.pathname='/'+parts.join('/'); return u.toString(); }
       return null;
     } catch { return null; }
   }
@@ -40,7 +42,8 @@
     if(!site||typeof site.id!=='string'||!(/^[a-z][a-z0-9-]{0,70}$/).test(site.id)||typeof site.name!=='string'||!site.name.trim()||site.name.length>24||!validTemplate(site.template))return null;
     return {id:site.id,name:site.name.trim(),template:site.template,symbol:typeof site.symbol==='string'?Array.from(site.symbol).slice(0,2).join(''):Array.from(site.name)[0],color:/^#[a-f0-9]{6}$/i.test(site.color)?site.color:'#1a73e8'};
   }
-  const initialSites=Array.isArray(stored.sites)?stored.sites:[...BUILTINS,...(Array.isArray(stored.custom)?stored.custom:[])];
+  const savedSites=Array.isArray(stored.sites)?stored.sites:[...(Array.isArray(stored.custom)?stored.custom:[])];
+  const initialSites=[...savedSites,...BUILTINS.filter(site=>!savedSites.some(saved=>saved&&saved.id===site.id))];
   const seen=new Set();
   const loadedSites=initialSites.map(cleanSite).filter(site=>site&&!seen.has(site.id)&&seen.add(site.id)).slice(0,24);
   const oldWallpaper=stored.wallpaper&&typeof stored.wallpaper==='object'?stored.wallpaper:{};
