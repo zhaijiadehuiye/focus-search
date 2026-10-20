@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="一个安静的独立搜索入口。一次输入，直接搜索小红书、知乎、Google、B站等平台，没有推荐信息流。">
+  <meta name="referrer" content="no-referrer">
+  <title>Focus Search · 独立搜索</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-defs" aria-hidden="true"><defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="m9.4 3-.5 2.2-1.8 1L5 5.5 2.5 9.8 4.1 11v2l-1.6 1.2L5 18.5l2.1-.7 1.8 1 .5 2.2h5.2l.5-2.2 1.8-1 2.1.7 2.5-4.3-1.6-1.2v-2l1.6-1.2L19 5.5l-2.1.7-1.8-1-.5-2.2Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v5c0 5-8 10-8 10S4 16 4 11V6Z"/><path d="m8 11 3 3 5-5"/></symbol>
+  </defs></svg>
+  <header class="header">
+    <a class="home-link" href="./" aria-label="Focus Search 首页"><span class="tiny-mark">f<span>•</span></span><span>独立搜索</span></a>
+    <nav aria-label="页面导航"><button class="text-btn" data-dialog="about-dialog">关于</button><a id="repo-link" class="text-link" href="https://github.com/zhaijiadehuiye/focus-search" target="_blank" rel="noopener noreferrer">GitHub <svg><use href="#i-arrow"/></svg></a><button class="icon-btn" data-dialog="settings-dialog" aria-label="搜索设置" title="搜索设置"><svg><use href="#i-settings"/></svg></button></nav>
+  </header>
+  <main>
+    <section class="search-home" aria-label="独立搜索">
+      <div class="wordmark" aria-label="Focus Search"><span class="blue">F</span><span class="red">o</span><span class="yellow">c</span><span class="blue">u</span><span class="green">s</span><span class="wordmark-dot red">.</span></div>
+      <h1>只搜索，你想找的。</h1>
+      <form id="search-form" role="search" class="search-form">
+        <div class="searchbar"><svg class="search-icon"><use href="#i-search"/></svg><label class="sr-only" for="keyword">搜索关键词</label><input id="keyword" name="q" type="search" placeholder="输入关键词，直接抵达答案" autocomplete="off" maxlength="500" autofocus required><button id="clear-input" class="icon-btn clear-input" type="button" aria-label="清空关键词" hidden><svg><use href="#i-close"/></svg></button><span class="search-divider"></span><button class="search-submit icon-btn" aria-label="开始搜索" type="submit"><svg><use href="#i-arrow"/></svg></button></div>
+        <fieldset class="platform-field"><legend class="sr-only">选择搜索平台</legend><div id="platforms" class="platforms"></div></fieldset>
+        <div class="actions"><button type="submit" id="search-button" class="button primary-neutral">搜索小红书</button><button type="button" class="button" id="multi-button">多站搜索 <svg><use href="#i-arrow"/></svg></button></div>
+      </form>
+      <p class="keyboard-hint"><span><kbd>Enter</kbd> 搜索</span><span class="hint-dot">·</span><span><kbd>/</kbd> 开始输入</span><span class="hint-dot">·</span><span><kbd id="multi-shortcut">⌘ ↵</kbd> 多站搜索</span></p>
+      <section id="results" class="results" aria-label="搜索链接" hidden><div class="section-heading"><span id="results-heading">搜索已准备好</span><button id="close-results" class="icon-btn" aria-label="收起搜索链接"><svg><use href="#i-close"/></svg></button></div><p id="results-note"></p><div id="result-links" class="result-links"></div></section>
+      <section class="history" id="history-section" aria-label="最近搜索" hidden><div class="section-heading"><span>最近搜索</span><button class="text-btn muted" id="clear-history">清空</button></div><div id="history-items" class="history-items"></div></section>
+      <div class="quiet-note"><span class="quiet-line"></span><svg><use href="#i-shield"/></svg><span>没有推荐流，让搜索回到搜索。</span><span class="quiet-line"></span></div>
+    </section>
+  </main>
+  <footer><span class="footer-intent"><span class="status-dot"></span>带着问题来，找到答案就离开。</span><div><button class="text-btn" data-dialog="privacy-dialog">隐私说明</button><button class="text-btn" data-dialog="shortcuts-dialog">快捷键</button><button class="text-btn" data-dialog="settings-dialog">设置</button></div></footer>
+  <dialog id="multi-dialog"><div class="dialog-header"><div><p class="overline">SEARCH TOGETHER</p><h2>一次输入，多站搜索</h2></div><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><p class="dialog-intro">选择要搜索的平台。浏览器可能只允许自动打开一个标签页，你也可以逐个打开结果链接。</p><div id="multi-platforms" class="multi-platforms"></div><div class="dialog-actions"><span id="multi-count" class="muted"></span><button id="run-multi" class="button blue-button">开始搜索</button></div></dialog>
+  <dialog id="settings-dialog"><div class="dialog-header"><h2>搜索设置</h2><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><p class="dialog-intro">偏好只保存在当前浏览器。</p><div class="setting-row"><label for="theme">外观</label><select id="theme"><option value="light">浅色</option><option value="dark">深色</option><option value="system">跟随系统</option></select></div><div class="setting-row"><label for="new-tab">在新标签页打开结果</label><input id="new-tab" type="checkbox" role="switch"></div><div class="setting-row"><label for="remember-history">保存最近搜索<span class="setting-sub">默认关闭，最多保留 8 条，仅存于本机</span></label><input id="remember-history" type="checkbox" role="switch"></div><div class="settings-section"><h3>添加搜索网站</h3><p class="muted small">将搜索地址中的关键词替换为 <code>{query}</code>。</p><form id="custom-form"><label for="custom-name">网站名称</label><input id="custom-name" placeholder="例如：豆瓣" maxlength="20" required><label for="custom-url">搜索地址</label><input id="custom-url" placeholder="https://www.douban.com/search?q={query}" required><p id="custom-error" class="error" role="alert"></p><button class="button" type="submit">添加网站</button></form><div id="custom-list"></div></div><p class="saved-note" id="saved-note" role="status">更改后自动保存</p></dialog>
+  <dialog id="about-dialog"><div class="dialog-header"><h2>关于 Focus Search</h2><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><p>打开一个平台，本来想搜索，却被首页推荐带走。Focus Search 为此而生。</p><p>在这里输入关键词，直接前往你选择的平台搜索结果。没有热搜、资讯和推荐卡片。</p><p class="muted">这是独立的搜索入口，未与 Google 或任何搜索平台建立关联。平台的登录、验证码及访问要求仍然适用；进入结果页后，平台本身仍可能显示推荐内容。</p></dialog>
+  <dialog id="privacy-dialog"><div class="dialog-header"><h2>你的搜索，留给你自己</h2><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><p>本页不使用分析统计、广告脚本、外部字体或第三方图标请求。输入时不会发送关键词；只有点击搜索，才会将关键词传给你选定的平台。</p><p>默认不保存搜索历史。若主动开启，记录仅保存在当前浏览器，关闭开关会立即删除。主题、平台选择等偏好也仅存于当前浏览器。</p><p class="muted">网站由 GitHub Pages 托管，托管方可能保留常规访问日志。目标搜索平台按各自的隐私政策处理搜索请求。本页不会绕过平台登录或屏蔽平台结果页上的推荐。</p></dialog>
+  <dialog id="shortcuts-dialog"><div class="dialog-header"><h2>让操作更顺手</h2><button class="icon-btn" data-close aria-label="关闭"><svg><use href="#i-close"/></svg></button></div><dl class="shortcut-list"><div><dt>聚焦搜索框</dt><dd><kbd>/</kbd></dd></div><div><dt>搜索当前平台</dt><dd><kbd>Enter</kbd></dd></div><div><dt>打开多站搜索</dt><dd><kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd></dd></div><div><dt>关闭弹窗</dt><dd><kbd>Esc</kbd></dd></div></dl></dialog>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
