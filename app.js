@@ -7,6 +7,7 @@
     {id:'google',name:'Google',symbol:'G',color:'#4285f4',template:'https://www.google.com/search?q={query}'},
     {id:'baidu',name:'百度',symbol:'度',color:'#346efd',template:'https://www.baidu.com/s?wd={query}'},
     {id:'bilibili',name:'B站',symbol:'哔',color:'#fb7299',template:'https://search.bilibili.com/all?keyword={query}'},
+    {id:'douyin',name:'抖音',symbol:'抖',color:'#111111',template:'https://www.douyin.com/search/{query}?type=general'},
     {id:'youtube',name:'YouTube',symbol:'▶',color:'#ea4335',template:'https://www.youtube.com/results?search_query={query}'},
     {id:'reddit',name:'Reddit',symbol:'r',color:'#f4501e',template:'https://www.reddit.com/search/?q={query}'},
     {id:'github',name:'GitHub',symbol:'⌘',color:'#70757a',template:'https://github.com/search?q={query}&type=repositories'}
@@ -19,6 +20,18 @@
   function validTemplate(value) {
     if (typeof value !== 'string' || value.length > 2000 || !value.includes('{query}')) return false;
     try { const url=new URL(value.replaceAll('{query}','focus-test'));return ['https:','http:'].includes(url.protocol)&&!url.username&&!url.password&&!url.hostname.includes('focus-test'); } catch { return false; }
+  }
+  function parseSearchTemplate(value) {
+    try {
+      const u = new URL(value.trim());
+      if (!['http:','https:'].includes(u.protocol)) return null;
+      const keys=['q','query','keyword','keywords','search_query','wd','text'];
+      for (const key of keys) if (u.searchParams.has(key)) { u.searchParams.set(key,'{query}'); return u.toString(); }
+      const parts=u.pathname.split('/').filter(Boolean);
+      const index=parts.findIndex(part=>/^(search|search_result|results|s)$/i.test(part));
+      if (index>=0 && parts[index+1]) { parts[index+1]='{query}'; u.pathname='/'+parts.join('/'); return u.toString(); }
+      return null;
+    } catch { return null; }
   }
   function validImageUrl(value) {
     try { const u=new URL(value);return value.length<=4000&&u.protocol==='https:'&&!u.username&&!u.password; } catch { return false; }
@@ -91,6 +104,11 @@
   }
   $('#cancel-edit').addEventListener('click',resetEditor);
   $('#restore-sites').addEventListener('click',()=>{const missing=BUILTINS.filter(site=>!siteById(site.id));const room=24-sites().length;state.sites.push(...missing.slice(0,room).map(s=>({...s})));refreshSites();toast(missing.length?'已恢复 '+Math.min(missing.length,room)+' 个内置网站':'内置网站都在列表中');});
+  $('#parse-site').addEventListener('click',()=>{
+    const parsed=parseSearchTemplate($('#custom-url').value),error=$('#custom-error');
+    if(!parsed){error.textContent='请粘贴一个已经包含关键词的搜索结果网址，例如 ?q=电影 或 /search/电影';return;}
+    $('#custom-url').value=parsed;error.textContent='已识别搜索地址，请检查后保存。';
+  });
   $('#custom-form').addEventListener('submit',event=>{event.preventDefault();const name=$('#custom-name').value.trim(),template=$('#custom-url').value.trim(),error=$('#custom-error');if(!name){error.textContent='请输入网站名称';return;}if(!validTemplate(template)){error.textContent='请输入包含 {query} 的 HTTP 或 HTTPS 搜索地址，关键词须放在路径或参数中。';return;}if(!editingId&&sites().length>=24){error.textContent='最多保留 24 个网站，请先删除一个。';return;}const existing=siteById(editingId);const data={id:editingId||'custom-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7),name,template,symbol:existing?.symbol||Array.from(name)[0],color:existing?.color||'#1a73e8'};if(editingId){const index=state.sites.findIndex(s=>s.id===editingId);if(index>=0)state.sites[index]=data;}else state.sites.push(data);const wasEditing=!!editingId;resetEditor();refreshSites();toast((wasEditing?'已更新 ':'已添加 ')+name);});
   // Local photos are stored in IndexedDB, never in GitHub or a server.
   function imageStore(action,value){return new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('浏览器不支持图片存储'));return;}const req=indexedDB.open('focus-search-images',1);req.onupgradeneeded=()=>{req.result.createObjectStore('images');};req.onerror=()=>reject(req.error);req.onblocked=()=>reject(new Error('图片存储被其他标签页占用'));req.onsuccess=()=>{const db=req.result;const tx=db.transaction('images',action==='get'?'readonly':'readwrite'),store=tx.objectStore('images');let read;try{if(action==='get')read=store.get('background');else if(action==='put')store.put(value,'background');else store.delete('background');}catch(e){db.close();reject(e);return;}tx.oncomplete=()=>{resolve(read?.result);db.close();};tx.onerror=()=>{reject(tx.error);db.close();};tx.onabort=()=>{reject(tx.error||new Error('保存被取消'));db.close();};};});}
