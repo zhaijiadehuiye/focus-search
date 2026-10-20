@@ -67,7 +67,23 @@
   };
   const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   function makeUrl(site,query){return site.template.replaceAll('{query}',encodeURIComponent(query));}
-  function makeAppUrl(site,query){return APP_LINKS[site.id]?.(query)||null;}
+  function makeAppUrl(site,query){return APP_LINKS[site.id]?.(query)||null;}  function renderMobileGateway(){
+    const list=$('#mobile-apps');if(!list)return;list.replaceChildren();
+    for(const site of sites()){
+      const card=node('div','mobile-app-card');
+      const appUrl=makeAppUrl(site,'');
+      const app=node('a','mobile-app-open',site.name+' App');
+      app.href=appUrl||makeUrl(site,'');app.dataset.siteId=site.id;app.append(symbol(site));
+      const web=node('a','mobile-app-web','网页版');web.href=makeUrl(site,'');web.target='_blank';web.rel='noopener noreferrer';web.dataset.siteId=site.id;
+      card.append(app,web);list.append(card);
+    }
+    list.querySelectorAll('.mobile-app-open').forEach(link=>link.addEventListener('click',event=>{
+      const q=$('#mobile-keyword').value.trim();if(!q){event.preventDefault();$('#mobile-keyword').focus();return;}
+      const site=siteById(link.dataset.siteId);if(!site)return;link.href=makeAppUrl(site,q)||makeUrl(site,q);remember(q);
+    }));
+    list.querySelectorAll('.mobile-app-web').forEach(link=>link.addEventListener('click',()=>{const q=$('#mobile-keyword').value.trim();const site=siteById(link.dataset.siteId);if(site&&q){link.href=makeUrl(site,q);remember(q);}}));
+  }
+
   function applyTheme(){document.body.dataset.theme=state.theme==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):state.theme;document.querySelector('meta[name="theme-color"]').content=document.body.dataset.theme==='dark'?'#202124':'#ffffff';}
   applyTheme();matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(state.theme==='system')applyTheme();});
   function renderPlatforms(){
@@ -156,7 +172,7 @@
   document.addEventListener('keydown',e=>{if(e.isComposing||document.querySelector('dialog[open]'))return;const editing=['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)||document.activeElement.isContentEditable;if(e.key==='/'&&!editing&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();input.focus();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault();openMulti();}});
   $('#multi-shortcut').textContent=/Mac|iPhone|iPad/.test(navigator.platform)?'⌘ ↵':'Ctrl ↵';
   const params=new URLSearchParams(location.search),initialQuery=params.get('q'),initialSite=params.get('site');if(initialQuery){input.value=initialQuery.slice(0,500);$('#clear-input').hidden=false;}if(siteById(initialSite))state.selected=initialSite;
-  renderPlatforms();renderHistory();renderSiteList();syncBackgroundControls();applyWallpaper({reroll:true});
+  renderPlatforms();renderMobileGateway();renderHistory();renderSiteList();syncBackgroundControls();applyWallpaper({reroll:true});
   imageStore('get').then(blob=>{localAvailable=!!blob;$('#remove-local').hidden=!blob;}).catch(()=>{});
   if(!storageOK)$('#saved-note').textContent='浏览器存储不可用，偏好将在本次会话内生效';
 })();

@@ -29,6 +29,14 @@
     <a class="home-link" href="./" aria-label="Focus Search 首页"><span class="tiny-mark">f<span>•</span></span><span>独立搜索</span></a>
     <nav aria-label="页面导航"><button class="text-btn" data-dialog="sites-dialog">管理网站</button><button class="text-btn nav-background" data-dialog="background-dialog">背景</button><button class="text-btn" data-dialog="about-dialog">关于</button><a id="repo-link" class="text-link" href="https://github.com/zhaijiadehuiye/focus-search" target="_blank" rel="noopener noreferrer">GitHub <svg><use href="#i-arrow"/></svg></a><button class="icon-btn" data-dialog="settings-dialog" aria-label="搜索设置" title="搜索设置"><svg><use href="#i-settings"/></svg></button></nav>
   </header>
+  <section class="mobile-gateway" aria-label="手机 App 搜索入口">
+    <div class="mobile-gateway-mark">独立搜索</div>
+    <p class="mobile-gateway-subtitle">选择 App，直接打开搜索</p>
+    <label class="sr-only" for="mobile-keyword">搜索关键词</label>
+    <input id="mobile-keyword" class="mobile-keyword" type="search" placeholder="输入关键词" autocomplete="off" maxlength="500">
+    <div id="mobile-apps" class="mobile-apps"></div>
+    <p class="mobile-fallback-note">没有安装 App？点击平台下方的网页版入口。</p>
+  </section>
   <main>
     <section class="search-home" aria-label="独立搜索">
       <h1 class="sr-only">独立搜索</h1>
