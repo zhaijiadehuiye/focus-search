@@ -69,13 +69,17 @@
   function makeUrl(site,query){return site.template.replaceAll('{query}',encodeURIComponent(query));}
   function makeAppUrl(site,query){return APP_LINKS[site.id]?.(query)||null;}  function renderMobileGateway(){
     const list=$('#mobile-apps');if(!list)return;list.replaceChildren();
-    for(const site of sites()){
+    const ordered=sites().slice().sort((a,b)=>Number(!!makeAppUrl(b,''))-Number(!!makeAppUrl(a,'')));
+    for(const site of ordered){
       const card=node('div','mobile-app-card');
       const appUrl=makeAppUrl(site,'');
-      const app=node('a','mobile-app-open',site.name+' App');
+      const app=node('a','mobile-app-open',site.name+(appUrl?' App':' 网页'));
       app.href=appUrl||makeUrl(site,'');app.dataset.siteId=site.id;app.append(symbol(site));
-      const web=node('a','mobile-app-web','网页版');web.href=makeUrl(site,'');web.target='_blank';web.rel='noopener noreferrer';web.dataset.siteId=site.id;
-      card.append(app,web);list.append(card);
+      card.append(app);
+      if(appUrl){
+        const web=node('a','mobile-app-web','网页版');web.href=makeUrl(site,'');web.target='_blank';web.rel='noopener noreferrer';web.dataset.siteId=site.id;card.append(web);
+      }
+      list.append(card);
     }
     list.querySelectorAll('.mobile-app-open').forEach(link=>link.addEventListener('click',event=>{
       const q=$('#mobile-keyword').value.trim();if(!q){event.preventDefault();$('#mobile-keyword').focus();return;}
@@ -116,7 +120,7 @@
   $('#clear-history').addEventListener('click',()=>{state.history=[];save();renderHistory();toast('搜索记录已清空');});
   let editingId=null;
   function resetEditor(){editingId=null;$('#custom-form').reset();$('#editor-heading').textContent='添加搜索网站';$('#save-site').textContent='添加网站';$('#cancel-edit').hidden=true;$('#custom-error').textContent='';}
-  function refreshSites(){reconcileSites();save();renderPlatforms();renderSiteList();$('#results').hidden=true;}
+  function refreshSites(){reconcileSites();save();renderPlatforms();renderMobileGateway();renderSiteList();$('#results').hidden=true;}
   function renderSiteList(){
     const list=$('#site-list');list.replaceChildren();$('#site-count').textContent=sites().length+' / 24 个';
     if(!sites().length)list.append(node('p','muted small','网站已清空。在下方添加，或恢复内置网站。'));
@@ -173,6 +177,7 @@
   $('#multi-shortcut').textContent=/Mac|iPhone|iPad/.test(navigator.platform)?'⌘ ↵':'Ctrl ↵';
   const params=new URLSearchParams(location.search),initialQuery=params.get('q'),initialSite=params.get('site');if(initialQuery){input.value=initialQuery.slice(0,500);$('#clear-input').hidden=false;}if(siteById(initialSite))state.selected=initialSite;
   renderPlatforms();renderMobileGateway();renderHistory();renderSiteList();syncBackgroundControls();applyWallpaper({reroll:true});
+  $('#mobile-keyword').addEventListener('keydown',event=>{if(event.key!=='Enter')return;event.preventDefault();const q=event.currentTarget.value.trim();if(!q){event.currentTarget.focus();return;}const first=sites().find(site=>makeAppUrl(site,''))||sites()[0];if(!first)return;const appLink=$('#mobile-apps a[data-site-id="'+CSS.escape(first.id)+'"]');if(appLink)appLink.click();});
   imageStore('get').then(blob=>{localAvailable=!!blob;$('#remove-local').hidden=!blob;}).catch(()=>{});
   if(!storageOK)$('#saved-note').textContent='浏览器存储不可用，偏好将在本次会话内生效';
 })();
