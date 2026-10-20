@@ -10,7 +10,17 @@
     {id:'douyin',name:'抖音',symbol:'抖',color:'#111111',template:'https://www.douyin.com/search/{query}?type=general'},
     {id:'youtube',name:'YouTube',symbol:'▶',color:'#ea4335',template:'https://www.youtube.com/results?search_query={query}'},
     {id:'reddit',name:'Reddit',symbol:'r',color:'#f4501e',template:'https://www.reddit.com/search/?q={query}'},
-    {id:'github',name:'GitHub',symbol:'⌘',color:'#70757a',template:'https://github.com/search?q={query}&type=repositories'}
+    {id:'github',name:'GitHub',symbol:'⌘',color:'#70757a',template:'https://github.com/search?q={query}&type=repositories'},
+    {id:'chatgpt',name:'ChatGPT',symbol:'◎',color:'#10a37f',template:'https://chatgpt.com/?q={query}'},
+    {id:'gemini',name:'Gemini',symbol:'✦',color:'#4285f4',template:'https://gemini.google.com/app?q={query}'},
+    {id:'claude',name:'Claude',symbol:'C',color:'#d97757',template:'https://claude.ai/new?q={query}'},
+    {id:'deepseek',name:'DeepSeek',symbol:'D',color:'#4b8bf5',template:'https://chat.deepseek.com/?q={query}'},
+    {id:'kimi',name:'Kimi',symbol:'K',color:'#5b5ce2',template:'https://kimi.moonshot.cn/?q={query}'},
+    {id:'doubao',name:'豆包',symbol:'豆',color:'#3370ff',template:'https://www.doubao.com/chat/?q={query}'},
+    {id:'qwen',name:'通义千问',symbol:'通',color:'#615ced',template:'https://tongyi.aliyun.com/qianwen/?q={query}'},
+    {id:'yuanbao',name:'腾讯元宝',symbol:'元',color:'#2f7cf6',template:'https://yuanbao.tencent.com/chat/naQivTmsDa?q={query}'},
+    {id:'wenxin',name:'文心一言',symbol:'文',color:'#315efb',template:'https://yiyan.baidu.com/?q={query}'},
+    {id:'perplexity',name:'Perplexity',symbol:'P',color:'#20b8a6',template:'https://www.perplexity.ai/search?q={query}'}
   ];
   const WALLPAPERS = [{"id": "lake", "name": "湖光山色", "src": "./assets/wallpapers/lake.webp", "thumb": "./assets/wallpapers/lake-thumb.webp", "source": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e"}, {"id": "peaks", "name": "远山", "src": "./assets/wallpapers/peaks.webp", "thumb": "./assets/wallpapers/peaks-thumb.webp", "source": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b"}, {"id": "sunset", "name": "山野暮色", "src": "./assets/wallpapers/sunset.webp", "thumb": "./assets/wallpapers/sunset-thumb.webp", "source": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"}, {"id": "forest", "name": "林间光影", "src": "./assets/wallpapers/forest.webp", "thumb": "./assets/wallpapers/forest-thumb.webp", "source": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e"}, {"id": "alpine", "name": "高山湖泊", "src": "./assets/wallpapers/alpine.webp", "thumb": "./assets/wallpapers/alpine-thumb.webp", "source": "https://images.unsplash.com/photo-1501785888041-af3ef285b470"}, {"id": "woods", "name": "绿意森林", "src": "./assets/wallpapers/woods.webp", "thumb": "./assets/wallpapers/woods-thumb.webp", "source": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d"}, {"id": "meadow", "name": "原野", "src": "./assets/wallpapers/meadow.webp", "thumb": "./assets/wallpapers/meadow-thumb.webp", "source": "https://images.unsplash.com/photo-1472214103451-9374bd1c798e"}, {"id": "stars", "name": "雪山星空", "src": "./assets/wallpapers/stars.webp", "thumb": "./assets/wallpapers/stars-thumb.webp", "source": "https://images.unsplash.com/photo-1519681393784-d120267933ba"}];
   const $ = selector => document.querySelector(selector);
